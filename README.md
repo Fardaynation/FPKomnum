@@ -1,4 +1,4 @@
-# - Code
+# * `Raw Code`
 ---
 ``` python
 class BesselInterpolator:
@@ -13,7 +13,7 @@ class BesselInterpolator:
     def interpolate(self, x_target, x0):
         u = (x_target - x0) / self.h
 
-        # Rumus Bessel
+        # Formula
         term1 = (self.f0 + self.f1) / 2
         term2 = (u - 0.5) * self.delta_f0
         term3 = (u * (u - 1) / 2) * ((self.delta2_f_1 + self.delta2_f0) / 2)
@@ -26,7 +26,7 @@ class BesselInterpolator:
         return round(et, 2)
 
 
-# Data dari tabel
+# Data obtained from table
 h = 3
 x0 = 15
 x_target = 16
@@ -38,7 +38,7 @@ delta_f0 = 1039299   # Δf(15)
 delta2_f_1 = 296784  # Δ²f(12)
 delta2_f0 = 589680   # Δ²f(15)
 
-# Inisialisasi dan proses interpolasi
+# For inisialising and run the process of interpolation
 bessel = BesselInterpolator(h, f0, f1, delta_f0, delta2_f_1, delta2_f0)
 estimated = bessel.interpolate(x_target, x0)
 error = bessel.error_relative(actual_value, estimated)
@@ -50,9 +50,9 @@ print(f"Error Term/Suku Kesalahan (Et): {error}%")
 
 ```
 ---
-# Explanation
+# `Explanation`
 ---
-* Formula used:
+## Formula used:
 $$
 f(x) \approx \frac{f_0 + f_1}{2} + \left(u - \frac{1}{2}\right)\Delta f_0 + \frac{u(u - 1)}{2} \cdot \frac{\Delta^2 f_{-1} + \Delta^2 f_0}{2}
 $$
@@ -67,12 +67,9 @@ With:
 * $u = \frac{x - x_0}{h}$, Interpolation parameter
 * $h$ = Distance between value (in the given example, $h = 3$)
 ---
-Breakdown on each functions in the code:
+## Breakdown on each functions in the code:
 ---
-
-## 🧩 **Penjelasan Program per Bagian**
-
-### 1. **Kelas BesselInterpolator**
+### 1. **BesselInterpolator class**
 
 ```python
 class BesselInterpolator:
@@ -80,62 +77,62 @@ class BesselInterpolator:
         ...
 ```
 
-* Ini adalah class Python untuk menyimpan semua parameter interpolasi.
-* Parameter yang dibutuhkan:
+* Used to store needed parameters.
+* Parameters:
 
-  * `h`: selisih antar x (dalam kasus ini, 3)
-  * `f0`: nilai fungsi di `x0 = 15`
-  * `f1`: nilai fungsi di `x1 = 18`
-  * `delta_f0`: selisih pertama di `x = 15`
-  * `delta2_f_1`: selisih kedua di titik sebelumnya, `x = 12`
-  * `delta2_f0`: selisih kedua di titik utama, `x = 15`
+  * `h`: Difference between each x (in our given question, 3)
+  * `f0`: Function values in `x0 = 15`
+  * `f1`: Function values in `x1 = 18`
+  * `delta_f0`: First difference of values in `x = 15`
+  * `delta2_f_1`: Second difference in values of `x = 12`
+  * `delta2_f0`: Second difference of values in `x = 15`
 
 ---
 
-### 2. **Fungsi `interpolate()`**
+### 2. **`interpolate() function`**
 
 ```python
 def interpolate(self, x_target, x0):
     u = (x_target - x0) / self.h
 ```
 
-* Menghitung parameter `u` berdasarkan lokasi target relatif terhadap `x0`.
-* Karena `x_target = 16` dan `x0 = 15`, serta `h = 3`, maka:
+* To count parameter `u` based on `x0`.
+* Because `x_target = 16` and `x0 = 15`, with `h = 3`, ergo:
 
   $$
   u = \frac{16 - 15}{3} = \frac{1}{3} \approx 0.333
   $$
 
-Selanjutnya menghitung 3 suku dalam rumus Bessel:
+Next, calculate 3 functions in Bessel:
 
 ```python
 term1 = (self.f0 + self.f1) / 2
 ```
 
-* Ini adalah suku pertama: rata-rata dari nilai fungsi `f0` dan `f1`.
+* First one: Average value of `f0` and `f1`.
 
 ```python
 term2 = (u - 0.5) * self.delta_f0
 ```
 
-* Suku kedua: efek dari selisih pertama (Δf) dikalikan faktor penyesuaian terhadap `u`.
+* Second: First difference (Δf) multiplied by `u`.
 
 ```python
 term3 = (u * (u - 1) / 2) * ((self.delta2_f_1 + self.delta2_f0) / 2)
 ```
 
-* Suku ketiga: pengaruh dari selisih kedua (Δ²f) dirata-ratakan, kemudian dikalikan dengan bentuk kuadratik dari `u`.
+* Third: Value of (Δ²f) averaged, then multiplied with quadratic form of `u`.
 
 ```python
 fx = term1 + term2 + term3
 return round(fx, 2)
 ```
 
-* Hasil akhir dari interpolasi adalah jumlah dari ketiga suku tersebut, lalu dibulatkan ke dua angka desimal.
+* End result is the addition of the previously calculated values, then round it to two digits behind comma.
 
 ---
 
-### 3. **Fungsi `error_relative()`**
+### 3. **`error_relative() function`**
 
 ```python
 def error_relative(self, actual, estimated):
@@ -143,7 +140,7 @@ def error_relative(self, actual, estimated):
     return round(et, 2)
 ```
 
-* Fungsi ini menghitung **galat relatif** (relative error) dalam persen:
+* This function computes **Et** in percentage:
 
 $$
 E_t = \left|\frac{y_{\text{aktual}} - y_{\text{estimasi}}}{y_{\text{aktual}}}\right| \times 100\%
@@ -151,17 +148,16 @@ $$
 
 ---
 
-### 4. **Pemanggilan dan Output**
+### 4. **Data**
 
 ```python
-# Data dari tabel
 h = 3
 x0 = 15
 x_target = 16
 actual_value = 897104
 ```
 
-Nilai-nilai dari tabel:
+Values from given table:
 
 * `f0 = 634575` (y di x = 15)
 * `f1 = 1673874` (y di x = 18)
@@ -171,19 +167,20 @@ Nilai-nilai dari tabel:
 
 ---
 
-### 5. **Output Program**
+### 5. **Output**
 
 ```python
 print(f"Hasil interpolasi Bessel di x = {x_target}: {estimated}")
 print(f"Nilai sebenarnya: {actual_value}")
 print(f"Error Term/Suku Kesalahan (Et): {error}%")
 ```
-
-Misalnya, jika hasil estimasi adalah `931760.0`, maka:
-
-* Hasil interpolasi ≈ 931760.0
-* Nilai aktual = 897104
-* Galat relatif = 3.86%
-
 ---
-  
+## * `Result:`
+---
+Hasil interpolasi ≈ 931760.0
+Nilai aktual = 897104
+Galat relatif = 3.86%
+---
+## * Screenshot:
+---
+https://imgur.com/a/1diWYIa

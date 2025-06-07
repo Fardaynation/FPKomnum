@@ -1,4 +1,4 @@
-# * `Raw Code`
+# Raw Code
 ---
 ``` python
 class BesselInterpolator:
@@ -50,7 +50,7 @@ print(f"Error Term/Suku Kesalahan (Et): {error}%")
 
 ```
 ---
-# `Explanation`
+# Explanation
 ---
 ## Formula used:
 $$
@@ -175,12 +175,12 @@ print(f"Nilai sebenarnya: {actual_value}")
 print(f"Error Term/Suku Kesalahan (Et): {error}%")
 ```
 ---
-## * `Result:`
+## Result:
 ---
 Hasil interpolasi ≈ 931760.0
 Nilai aktual = 897104
 Galat relatif = 3.86%
 ---
-## * Screenshot:
+## Screenshot:
 ---
 https://imgur.com/a/1diWYIa

@@ -183,4 +183,4 @@ Galat relatif = 3.86%
 ---
 ## Screenshot:
 ---
-https://imgur.com/a/1diWYIa
+![xx](https://i.imgur.com/a/1diWYIa.jpeg)

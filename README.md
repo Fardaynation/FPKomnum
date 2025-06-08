@@ -177,9 +177,9 @@ print(f"Error Term/Suku Kesalahan (Et): {error}%")
 ---
 ## Result:
 ---
-Hasil interpolasi ≈ 931760.0
-Nilai sebenarnya = 897104
-Error Term/Suku Kesalahan(Et) = 3.86%
+Hasil interpolasi Bessel di x = 16: 931760.0
+Nilai sebenarnya: 897104
+Error Term/Suku Kesalahan (Et): 3.86%
 ---
 ## Screenshot:
 ---

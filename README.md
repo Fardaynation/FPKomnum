@@ -4,77 +4,82 @@
 - Fawwaz Reynardio Ednansyah - 502241167
 - Ahmad Abdurrahman - 5025241076
 - Makna Alam Pratama - 5025241077
-
-
 ---
 # Raw Code
 ---
 ``` python
 class BesselInterpolator:
-    def __init__(self, h, f0, f1, delta_f0, delta2_f_1, delta2_f0):
+    def __init__(self, h, f0, delta_f0, delta2_f_1, delta2_f0, delta3_f_1=None, delta4_f_2=None, delta4_f_1=None, delta5_f_2=None):
         self.h = h
         self.f0 = f0
-        self.f1 = f1
         self.delta_f0 = delta_f0
         self.delta2_f_1 = delta2_f_1
         self.delta2_f0 = delta2_f0
+        self.delta3_f_1 = delta3_f_1
+        self.delta4_f_2 = delta4_f_2
+        self.delta4_f_1 = delta4_f_1
+        self.delta5_f_2 = delta5_f_2
+
 
     def interpolate(self, x_target, x0):
-        u = (x_target - x0) / self.h
+        s = (x_target - x0) / self.h
+        delta2_avg = (self.delta2_f_1 + self.delta2_f0) / 2
+        delta4_avg = (self.delta4_f_2 + self.delta4_f_1) / 2 if self.delta4_f_2 and self.delta4_f_1 else 0
+        delta5 = self.delta5_f_2 if self.delta5_f_2 else 0
 
-        # Formula
-        term1 = (self.f0 + self.f1) / 2
-        term2 = (u - 0.5) * self.delta_f0
-        term3 = (u * (u - 1) / 2) * ((self.delta2_f_1 + self.delta2_f0) / 2)
+        term1 = round(self.f0, 2)
+        term2 = round(s * self.delta_f0, 2)
+        term3 = round((s * (s - 1) / 2) * delta2_avg, 2)
+        term4 = round((1 / 3) * (s * (s - 1) / 2) * (x_target - 0.5) * self.delta3_f_1, 2) if self.delta3_f_1 else 0
+        term5 = round((s * (s - 1) * (s - 2) * (s - 3) / 24) * delta4_avg, 2)
+        term6 = round((1 / 5) * (s * (s - 1) * (s - 2) * (s - 3) / 24) * (x_target - 0.5) * delta5, 2)
 
-        fx = term1 + term2 + term3
-        return round(fx, 2)
+        return round(term1 + term2 + term3 + term4 + term5 + term6, 2)
+
 
     def error_relative(self, actual, estimated):
-        et = abs((actual - estimated) / actual) * 100
-        return round(et, 2)
+        return round(abs((actual - estimated) / actual) * 100, 2)
 
 
 # Data obtained from table
 h = 3
 x0 = 15
 x_target = 16
-actual_value = 897104
+actual = 897104
 
-f0 = 634575      # f(15)
-f1 = 1673874     # f(18)
-delta_f0 = 1039299   # Δf(15)
-delta2_f_1 = 296784  # Δ²f(12)
-delta2_f0 = 589680   # Δ²f(15)
+# Dari tabel
+f0 = 634575
+delta_f0 = 1039299
+delta2_f_1 = 589680
+delta2_f0 = 1028376
+delta3_f_1 = 438696
+delta4_f_2 = 145800
+delta4_f_1 = 174960
+delta5_f_2 = 0  # Tidak tersedia dari tabel
 
-# For inisialising and run the process of interpolation
-bessel = BesselInterpolator(h, f0, f1, delta_f0, delta2_f_1, delta2_f0)
+# Inisialisasi
+bessel = BesselInterpolator(h, f0, delta_f0, delta2_f_1, delta2_f0,
+                            delta3_f_1=delta3_f_1,
+                            delta4_f_2=delta4_f_2,
+                            delta4_f_1=delta4_f_1,
+                            delta5_f_2=delta5_f_2)
+
+# Hitung
 estimated = bessel.interpolate(x_target, x0)
-error = bessel.error_relative(actual_value, estimated)
+error = bessel.error_relative(actual, estimated)
 
 # Output
 print(f"Hasil interpolasi Bessel di x = {x_target}: {estimated}")
-print(f"Nilai sebenarnya: {actual_value}")
-print(f"Error Term/Suku Kesalahan (Et): {error}%")
+print(f"Nilai sebenarnya: {actual}")
+print(f"Error (Et): {error}%")
 
 ```
 ---
 # Explanation
 ---
 ## Formula used:
-$$
-f(x) \approx \frac{f_0 + f_1}{2} + \left(u - \frac{1}{2}\right)\Delta f_0 + \frac{u(u - 1)}{2} \cdot \frac{\Delta^2 f_{-1} + \Delta^2 f_0}{2}
-$$
+![image](https://github.com/user-attachments/assets/599cdf6f-203c-4005-9f80-8a2e56468b74)
 
-With:
-
-* $f_0$ = Value of starting function (in this case `x=15`)
-* $f_1$ = Value of function afterwards (`x=18`)
-* $\Delta f_0$ = First difference of values `x=15`
-* $\Delta^2 f_0$ = Second difference of values `x=15`
-* $\Delta^2 f_{-1}$ = Second difference of values (`x=12`)
-* $u = \frac{x - x_0}{h}$, Interpolation parameter
-* $h$ = Distance between value (in the given example, $h = 3$)
 ---
 ## Breakdown on each functions in the code:
 ---
@@ -82,7 +87,7 @@ With:
 
 ```python
 class BesselInterpolator:
-    def __init__(self, h, f0, f1, delta_f0, delta2_f_1, delta2_f0):
+    def __init__(self, h, f0, delta_f0, delta2_f_1, delta2_f0, delta3_f_1=None, delta4_f_2=None, delta4_f_1=None, delta5_f_2=None):
         ...
 ```
 
@@ -92,8 +97,8 @@ class BesselInterpolator:
   * `h`: Difference between each x (in our given question, 3)
   * `f0`: Function values in `x0 = 15`
   * `f1`: Function values in `x1 = 18`
-  * `delta_f0`: First difference of values in `x = 15`
-  * `delta2_f_1`: Second difference in values of `x = 12`
+  * `delta_f0`: First difference of values 
+  * `delta2_f_1`: Second difference in values
   * `delta2_f0`: Second difference of values in `x = 15`
 
 ---
@@ -115,29 +120,29 @@ def interpolate(self, x_target, x0):
 Next, calculate 3 functions in Bessel:
 
 ```python
-term1 = (self.f0 + self.f1) / 2
+    term1 = (self.f0 + self.f1) / 2
 ```
 
 * First one: Average value of `f0` and `f1`.
 
 ```python
-term2 = (u - 0.5) * self.delta_f0
+    term2 = (u - 0.5) * self.delta_f0
 ```
 
-* Second: First difference (Δf) multiplied by `u`.
+* Second: First difference (Δf) multiplied by `(u - 0.5)`.
 
 ```python
-term3 = (u * (u - 1) / 2) * ((self.delta2_f_1 + self.delta2_f0) / 2)
+    term3 = (u * (u - 1) / 2) * ((self.delta2_f_1 + self.delta2_f0) / 2)
 ```
 
-* Third: Value of (Δ²f) averaged, then multiplied with quadratic form of `u`.
+* Third: Value of second difference (Δ²f) averaged, then multiplied with the quadratic form of `u`.
 
 ```python
-fx = term1 + term2 + term3
-return round(fx, 2)
+    fx = term1 + term2 + term3
+    return round(fx, 2)
 ```
 
-* End result is the addition of the previously calculated values, then round it to two digits behind comma.
+* End result is the addition of the previously calculated values, then round it to two digits behind the comma.
 
 ---
 
@@ -159,40 +164,57 @@ $$
 
 ### 4. **Data**
 
-```python
+```
 h = 3
 x0 = 15
 x_target = 16
-actual_value = 897104
+actual = 897104
+
+# Dari tabel
+f0 = 634575
+delta_f0 = 1039299
+delta2_f_1 = 589680
+delta2_f0 = 1028376
+delta3_f_1 = 438696
+delta4_f_2 = 145800
+delta4_f_1 = 174960
+delta5_f_2 = 0  # Tidak tersedia dari tabel
 ```
-
-Values from given table:
-
-* `f0 = 634575` (y di x = 15)
-* `f1 = 1673874` (y di x = 18)
-* `Δf(15) = 1039299`
-* `Δ²f(12) = 296784`
-* `Δ²f(15) = 589680`
-
 ---
 
 ### 5. **Output**
-
-```python
-print(f"Hasil interpolasi Bessel di x = {x_target}: {estimated}")
-print(f"Nilai sebenarnya: {actual_value}")
-print(f"Error Term/Suku Kesalahan (Et): {error}%")
 ```
+# Inisialisasi
+bessel = BesselInterpolator(h, f0, delta_f0, delta2_f_1, delta2_f0,
+                            delta3_f_1=delta3_f_1,
+                            delta4_f_2=delta4_f_2,
+                            delta4_f_1=delta4_f_1,
+                            delta5_f_2=delta5_f_2)
+```
+this going to initialise
+
+```
+# Hitung
+estimated = bessel.interpolate(x_target, x0)
+error = bessel.error_relative(actual, estimated)
+```
+this to call the function
+
+```
+# Output
+print(f"Hasil interpolasi Bessel di x = {x_target}: {estimated}")
+print(f"Nilai sebenarnya: {actual}")
+print(f"Error (Et): {error}%")
+``` 
+this going to output
 ---
 ## Result:
 ---
-Hasil interpolasi Bessel di x = 16: 931760.0
-
+Hasil interpolasi Bessel di x = 16: 632672.0
 Nilai sebenarnya: 897104
-
-Error Term/Suku Kesalahan (Et): 3.86%
+Error (Et): 29.48%
 
 ---
-## Screenshot:
+## Screenshot:![image](https://github.com/user-attachments/assets/c9d60b1c-a908-4d5d-b810-36687ad64109)
+
 ---
-![Screenshot 2025-06-08 065153](https://github.com/user-attachments/assets/bebd605c-49ce-4c02-8453-9c21dd79a882)

@@ -1,3 +1,12 @@
+# IUP04
+- Alif Muflih Jauhary - 5025241003
+- Muhammad Asykan Farahat - 5025241006
+- Fawwaz Reynardio Ednansyah - 502241167
+- Ahmad Abdurrahman - 5025241076
+- Makna Alam Pratama - 5025241077
+
+
+---
 # Raw Code
 ---
 ``` python

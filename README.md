@@ -178,9 +178,9 @@ print(f"Error Term/Suku Kesalahan (Et): {error}%")
 ## Result:
 ---
 Hasil interpolasi ≈ 931760.0
-Nilai aktual = 897104
-Galat relatif = 3.86%
+Nilai sebenarnya = 897104
+Error Term/Suku Kesalahan(Et) = 3.86%
 ---
 ## Screenshot:
 ---
-(https://i.imgur.com/a/1diWYIa.jpeg)
+![Screenshot 2025-06-08 065153](https://github.com/user-attachments/assets/bebd605c-49ce-4c02-8453-9c21dd79a882)
